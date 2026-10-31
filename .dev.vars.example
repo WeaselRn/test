@@ -1,0 +1,4 @@
+# Copy to .dev.vars for local development. Never commit .dev.vars.
+# Optional: AI Finance Copilot provider ("groq" or "gemini") and key. Leave empty to disable.
+AI_PROVIDER=
+AI_API_KEY=

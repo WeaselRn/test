@@ -1,0 +1,52 @@
+# Replace the placeholder handles with real GitHub usernames before enabling branch protection.
+# Shared files need a second reviewer from the tech lead.
+
+*                                  @person1-handle
+
+# Shared contracts and infrastructure (Person 1, tech lead)
+/db/                               @person1-handle @person2-handle
+/migrations/                       @person1-handle @person2-handle
+/shared/                           @person1-handle @person2-handle
+/worker/lib/                       @person1-handle
+/worker/jobs/                      @person1-handle
+/worker/index.ts                   @person1-handle
+/src/app/                          @person1-handle
+/src/components/                   @person1-handle
+/src/lib/                          @person1-handle
+
+# Person 2: products, plans and sales
+/worker/modules/products/          @person2-handle
+/worker/modules/plans/             @person2-handle
+/worker/modules/taxes/             @person2-handle
+/worker/modules/discounts/         @person2-handle
+/worker/modules/quotations/        @person2-handle
+/src/modules/products/             @person2-handle
+/src/modules/plans/                @person2-handle
+/src/modules/taxes/                @person2-handle
+/src/modules/discounts/            @person2-handle
+/src/modules/quotations/           @person2-handle
+
+# Person 3: finance, invoices and payments
+/worker/modules/invoices/          @person3-handle
+/worker/modules/payments/          @person3-handle
+/worker/modules/reports/           @person3-handle
+/worker/modules/finance/           @person3-handle
+/src/modules/invoices/             @person3-handle
+/src/modules/payments/             @person3-handle
+/src/modules/reports/              @person3-handle
+/src/modules/finance/              @person3-handle
+
+# Person 4: customer experience and intelligence
+/worker/modules/customers/         @person4-handle
+/worker/modules/portal/            @person4-handle
+/worker/modules/dunning/           @person4-handle
+/worker/modules/renewals/          @person4-handle
+/worker/modules/retention/         @person4-handle
+/worker/modules/simulator/         @person4-handle
+/src/modules/customers/            @person4-handle
+/src/modules/customer-portal/      @person4-handle
+/src/modules/customer-health/      @person4-handle
+/src/modules/dunning/              @person4-handle
+/src/modules/renewals/             @person4-handle
+/src/modules/retention/            @person4-handle
+/src/modules/simulator/            @person4-handle
