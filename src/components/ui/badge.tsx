@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { cn, titleCase } from "@/lib/utils";
 
-export type Tone = "draft" | "pending" | "success" | "danger" | "primary";
+export type Tone = "draft" | "pending" | "success" | "danger" | "primary" | "accent";
 
 const tones: Record<Tone, string> = {
   draft: "bg-draft-soft text-draft ring-draft/15",
@@ -9,6 +9,7 @@ const tones: Record<Tone, string> = {
   success: "bg-success-soft text-success ring-success/20",
   danger: "bg-danger-soft text-danger ring-danger/20",
   primary: "bg-primary-soft text-primary-ink ring-primary/20",
+  accent: "bg-accent-soft text-accent-ink ring-accent/25",
 };
 
 const dots: Record<Tone, string> = {
@@ -17,6 +18,7 @@ const dots: Record<Tone, string> = {
   success: "bg-success",
   danger: "bg-danger",
   primary: "bg-primary",
+  accent: "bg-accent",
 };
 
 export function Badge({ tone = "draft", dot, children, className }: { tone?: Tone; dot?: boolean; children: ReactNode; className?: string }) {
@@ -62,7 +64,18 @@ const STATUS_TONE: Record<string, Tone> = {
   // users
   enabled: "success",
   disabled: "draft",
-  simulated: "pending",
+  simulated: "accent",
+  sent: "success",
+  failed: "danger",
+  quoted: "primary",
+  renewed: "success",
+  pending: "pending",
+  accepted_alternative: "success",
+  healthy: "success",
+  needs_attention: "pending",
+  at_risk: "danger",
+  completed: "success",
+  running: "pending",
 };
 
 export function StatusBadge({ status, label }: { status: string; label?: string }) {

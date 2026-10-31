@@ -13,17 +13,63 @@ import { runScheduledJobs } from "./jobs/scheduler";
 import { loadSession } from "./lib/auth";
 import { createDb } from "./lib/db";
 import { ApiError, errorResponse } from "./lib/errors";
+// Person 1 — core
+import { aiRoutes } from "./modules/ai/routes";
 import { authRoutes } from "./modules/auth/routes";
+import { billingRoutes } from "./modules/billing/routes";
 import { staffRoutes } from "./modules/staff/routes";
+import { subscriptionRoutes } from "./modules/subscriptions/routes";
 import { systemRoutes } from "./modules/system/routes";
+// Person 2 — catalog & sales
+import { discountRoutes } from "./modules/discounts/routes";
+import { planRoutes } from "./modules/plans/routes";
+import { productRoutes, variantRoutes } from "./modules/products/routes";
+import { quotationRoutes, templateRoutes } from "./modules/quotations/routes";
+import { taxRoutes } from "./modules/taxes/routes";
+// Person 3 — finance
+import { findingRoutes } from "./modules/finance/routes";
+import { invoiceRoutes } from "./modules/invoices/routes";
+import { invoicePaymentRoutes, paymentRoutes } from "./modules/payments/routes";
+import { reportRoutes } from "./modules/reports/routes";
+// Person 4 — customer
+import { customerRoutes } from "./modules/customers/routes";
+import { demoRoutes } from "./modules/demo/routes";
+import { dunningRoutes } from "./modules/dunning/routes";
+import { portalRoutes } from "./modules/portal/routes";
+import { renewalRoutes } from "./modules/renewals/routes";
+import { retentionRoutes } from "./modules/retention/routes";
+import { simulatorRoutes } from "./modules/simulator/routes";
 
 const routes = new Hono<AppEnv>()
+  // Person 1
   .route("/auth", authRoutes)
   .route("/staff", staffRoutes)
-  .route("/", systemRoutes);
-// Person 2: .route("/products", productRoutes).route("/plans", planRoutes) ...
-// Person 3: .route("/invoices", invoiceRoutes).route("/payments", paymentRoutes) ...
-// Person 4: .route("/customers", customerRoutes).route("/portal", portalRoutes) ...
+  .route("/subscriptions", quotationRoutes)
+  .route("/subscriptions", subscriptionRoutes)
+  .route("/billing", billingRoutes)
+  .route("/ai", aiRoutes)
+  .route("/", systemRoutes)
+  // Person 2
+  .route("/products", productRoutes)
+  .route("/variants", variantRoutes)
+  .route("/plans", planRoutes)
+  .route("/taxes", taxRoutes)
+  .route("/discounts", discountRoutes)
+  .route("/quotation-templates", templateRoutes)
+  // Person 3
+  .route("/invoices", invoicePaymentRoutes)
+  .route("/invoices", invoiceRoutes)
+  .route("/payments", paymentRoutes)
+  .route("/reports", reportRoutes)
+  .route("/findings", findingRoutes)
+  // Person 4
+  .route("/customers", customerRoutes)
+  .route("/portal", portalRoutes)
+  .route("/dunning", dunningRoutes)
+  .route("/renewals", renewalRoutes)
+  .route("/retention", retentionRoutes)
+  .route("/simulator", simulatorRoutes)
+  .route("/demo", demoRoutes);
 
 const app = new Hono<AppEnv>()
   .use("*", secureHeaders())

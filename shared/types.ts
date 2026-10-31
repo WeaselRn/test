@@ -122,9 +122,11 @@ export interface SubscriptionLine {
   productId: string;
   productName?: string;
   variantId: string | null;
+  variantName?: string | null;
   quantity: number;
   unitPrice: Money;
   taxId: string | null;
+  taxName?: string | null;
   discountId: string | null;
   amount: Money;
 }

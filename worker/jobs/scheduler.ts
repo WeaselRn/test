@@ -7,6 +7,10 @@
  */
 import { lt } from "drizzle-orm";
 import { createDb, schema, type Database } from "../lib/db";
+import { activateConfirmedJob, billingRunJob, planAutoCloseJob } from "../modules/billing/jobs";
+import { runDunning } from "../modules/dunning/service";
+import { scanInvoiceAnomalies, scanRevenueLeakage } from "../modules/finance/detection";
+import { scanRenewals } from "../modules/renewals/service";
 
 export interface JobContext {
   db: Database;
@@ -26,6 +30,13 @@ export interface ScheduledJob {
  * Module owners append their job here in their PR.
  */
 export const jobs: ScheduledJob[] = [
+  activateConfirmedJob, // Person 1
+  billingRunJob, // Person 1
+  planAutoCloseJob, // Person 1
+  { name: "dunning", run: runDunning }, // Person 4
+  { name: "renewals", run: scanRenewals }, // Person 4
+  { name: "revenue-leakage", run: scanRevenueLeakage }, // Person 3
+  { name: "invoice-anomalies", run: scanInvoiceAnomalies }, // Person 3
   {
     name: "cleanup-expired-sessions",
     async run({ db }) {

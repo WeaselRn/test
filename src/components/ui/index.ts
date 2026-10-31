@@ -7,3 +7,4 @@ export * from "./feedback";
 export * from "./form";
 export * from "./page";
 export * from "./toast";
+export * from "./tabs";

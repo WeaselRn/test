@@ -26,6 +26,19 @@
 /src/modules/discounts/            @person2-handle
 /src/modules/quotations/           @person2-handle
 
+# Person 1: core modules
+/worker/modules/auth/              @person1-handle
+/worker/modules/staff/             @person1-handle
+/worker/modules/system/            @person1-handle
+/worker/modules/subscriptions/     @person1-handle
+/worker/modules/billing/           @person1-handle
+/worker/modules/ai/                @person1-handle
+/src/modules/auth/                 @person1-handle
+/src/modules/staff/                @person1-handle
+/src/modules/subscriptions/        @person1-handle
+/src/modules/billing/              @person1-handle
+/src/modules/copilot/              @person1-handle
+
 # Person 3: finance, invoices and payments
 /worker/modules/invoices/          @person3-handle
 /worker/modules/payments/          @person3-handle
@@ -43,6 +56,8 @@
 /worker/modules/renewals/          @person4-handle
 /worker/modules/retention/         @person4-handle
 /worker/modules/simulator/         @person4-handle
+/worker/modules/demo/              @person4-handle
+/scripts/seed-bulk.ts              @person4-handle
 /src/modules/customers/            @person4-handle
 /src/modules/customer-portal/      @person4-handle
 /src/modules/customer-health/      @person4-handle

@@ -1,5 +1,5 @@
 /**
- * Application shell shared by the staff/admin app and the customer portal: fixed
+ * Application shell shared by the staff/admin app and the customer portal: light
  * sidebar (slide-out drawer below 768px), top bar with title, search and user menu.
  */
 import { useEffect, useRef, useState, type ReactNode } from "react";
@@ -19,15 +19,13 @@ export function AppShell({ nav, portal }: { nav: NavGroup[]; portal?: boolean })
     <div className="min-h-screen md:pl-60">
       <aside
         className={cn(
-          "no-print fixed inset-y-0 left-0 z-40 flex w-60 flex-col bg-sidebar text-zinc-400 transition-transform md:translate-x-0",
+          "no-print fixed inset-y-0 left-0 z-40 flex w-60 flex-col border-r border-line bg-sidebar text-body transition-transform md:translate-x-0",
           drawerOpen ? "translate-x-0" : "-translate-x-full",
         )}
       >
         <Sidebar nav={nav} portal={portal} onClose={() => setDrawerOpen(false)} />
       </aside>
-      {drawerOpen && (
-        <div className="fixed inset-0 z-30 animate-fade-in bg-ink/40 md:hidden" onClick={() => setDrawerOpen(false)} />
-      )}
+      {drawerOpen && <div className="fixed inset-0 z-30 animate-fade-in bg-ink/25 md:hidden" onClick={() => setDrawerOpen(false)} />}
       <div className="flex min-h-screen flex-col">
         <Topbar nav={nav} portal={portal} onMenu={() => setDrawerOpen(true)} />
         <main className="flex-1">
@@ -38,15 +36,15 @@ export function AppShell({ nav, portal }: { nav: NavGroup[]; portal?: boolean })
   );
 }
 
-function Logo() {
+export function Logo({ className }: { className?: string }) {
   return (
-    <div className="flex items-center gap-2.5">
+    <div className={cn("flex items-center gap-2.5", className)}>
       <svg viewBox="0 0 32 32" className="size-7" aria-hidden>
-        <rect width="32" height="32" rx="8" fill="#27272a" />
-        <circle cx="16" cy="16" r="7.5" fill="none" stroke="#a5b4fc" strokeWidth="3" />
-        <circle cx="21.3" cy="10.7" r="2.6" fill="#fafaf9" />
+        <rect width="32" height="32" rx="8" fill="var(--color-primary)" />
+        <circle cx="16" cy="16" r="7.5" fill="none" stroke="#fff" strokeWidth="3" />
+        <circle cx="21.3" cy="10.7" r="2.8" fill="var(--color-accent)" />
       </svg>
-      <span className="text-[15px] font-semibold tracking-tight text-white">Brightloop</span>
+      <span className="text-[15px] font-semibold tracking-tight text-ink">Brightloop</span>
     </div>
   );
 }
@@ -54,37 +52,49 @@ function Logo() {
 function Sidebar({ nav, portal, onClose }: { nav: NavGroup[]; portal?: boolean; onClose: () => void }) {
   const { user } = useSession();
   const groups = nav
-    .map((g) => ({ ...g, items: g.items.filter((i) => (!i.permission || can(user?.role, i.permission)) && (!i.roles || (user && i.roles.includes(user.role)))) }))
+    .map((g) => ({
+      ...g,
+      items: g.items.filter((i) => (!i.permission || can(user?.role, i.permission)) && (!i.roles || (user && i.roles.includes(user.role)))),
+    }))
     .filter((g) => g.items.length > 0);
 
   return (
     <>
       <div className="flex h-14 items-center justify-between px-4">
         <Logo />
-        <button onClick={onClose} className="rounded-md p-1 hover:bg-white/10 md:hidden" aria-label="Close menu">
+        <button onClick={onClose} className="rounded-md p-1 text-muted hover:bg-hover md:hidden" aria-label="Close menu">
           <X className="size-4" />
         </button>
       </div>
-      {portal && <div className="mx-4 mb-2 rounded-md bg-white/5 px-2.5 py-1.5 text-[11px] font-medium tracking-wide text-zinc-400 uppercase">Customer portal</div>}
+      {portal && (
+        <div className="mx-4 mb-1 rounded-md bg-accent-soft px-2.5 py-1.5 text-[11px] font-semibold tracking-wide text-accent-ink uppercase">
+          Customer portal
+        </div>
+      )}
       <nav className="flex-1 space-y-5 overflow-y-auto px-3 py-3">
         {groups.map((g) => (
           <div key={g.label}>
-            {!portal && <div className="mb-1 px-2 text-[11px] font-medium tracking-wide text-zinc-500 uppercase">{g.label}</div>}
+            {!portal && <div className="mb-1 px-2 text-[11px] font-semibold tracking-wide text-faint uppercase">{g.label}</div>}
             <ul className="space-y-px">
               {g.items.map((item) => (
                 <li key={item.to}>
                   <NavLink
                     to={item.to}
-                    end={item.to === "/portal" || item.to === "/customers"}
+                    end={item.end}
                     className={({ isActive }) =>
                       cn(
-                        "flex h-8 items-center gap-2.5 rounded-md px-2 text-[13px] transition-colors hover:bg-white/5 hover:text-zinc-100",
-                        isActive && "bg-white/10 font-medium text-white",
+                        "relative flex h-8 items-center gap-2.5 rounded-md px-2 text-[13px] text-body transition-colors hover:bg-white/70 hover:text-ink",
+                        isActive &&
+                          "bg-surface font-medium text-primary-ink shadow-card before:absolute before:top-1.5 before:bottom-1.5 before:-left-3 before:w-[3px] before:rounded-r before:bg-accent",
                       )
                     }
                   >
-                    <item.icon className="size-4 shrink-0 opacity-80" />
-                    {item.label}
+                    {({ isActive }) => (
+                      <>
+                        <item.icon className={cn("size-4 shrink-0", isActive ? "text-primary" : "text-muted")} />
+                        {item.label}
+                      </>
+                    )}
                   </NavLink>
                 </li>
               ))}
@@ -111,20 +121,20 @@ function UserMenu() {
   if (!user) return null;
 
   return (
-    <div ref={ref} className="relative border-t border-white/10 p-3">
+    <div ref={ref} className="relative border-t border-line p-3">
       <button
         onClick={() => setOpen((o) => !o)}
-        className="flex w-full items-center gap-2.5 rounded-md p-1.5 text-left hover:bg-white/5"
+        className="flex w-full items-center gap-2.5 rounded-md p-1.5 text-left hover:bg-white/70"
         aria-expanded={open}
       >
-        <span className="grid size-7 shrink-0 place-items-center rounded-full bg-primary text-[11px] font-semibold text-white">
+        <span className="grid size-7 shrink-0 place-items-center rounded-full bg-accent-soft text-[11px] font-semibold text-accent-ink ring-1 ring-accent/25">
           {initials(user.name)}
         </span>
         <span className="min-w-0 flex-1">
-          <span className="block truncate text-[13px] font-medium text-zinc-100">{user.name}</span>
-          <span className="block truncate text-[11px] text-zinc-500">{titleCase(user.role)}</span>
+          <span className="block truncate text-[13px] font-medium text-ink">{user.name}</span>
+          <span className="block truncate text-[11px] text-muted">{titleCase(user.role)}</span>
         </span>
-        <ChevronsUpDown className="size-3.5 text-zinc-500" />
+        <ChevronsUpDown className="size-3.5 text-faint" />
       </button>
       {open && (
         <div className="absolute right-3 bottom-full left-3 mb-1 animate-slide-up rounded-lg bg-surface p-1 text-body shadow-pop">
@@ -187,25 +197,23 @@ function GlobalSearch() {
 export function AuthLayout({ children }: { children: ReactNode }) {
   return (
     <div className="grid min-h-screen lg:grid-cols-[1fr_minmax(0,560px)]">
-      <div className="relative hidden overflow-hidden bg-sidebar p-10 text-zinc-300 lg:flex lg:flex-col">
+      <div className="relative hidden overflow-hidden border-r border-line bg-[linear-gradient(150deg,#eef0ff_0%,#f4f3fc_45%,#fff1ec_100%)] p-10 lg:flex lg:flex-col">
         <Logo />
+        <LedgerArt />
         <div className="mt-auto max-w-md">
-          <p className="text-[28px] leading-tight font-semibold tracking-tight text-white">
+          <p className="text-[28px] leading-tight font-semibold tracking-tight text-ink">
             Recurring revenue, billed right. Every period, exactly once.
           </p>
-          <p className="mt-4 text-[14px] leading-relaxed text-zinc-400">
-            Plans, quotes, subscriptions, invoices and payments in one ledger, with leakage detection that catches what
-            spreadsheets miss.
+          <p className="mt-4 text-[14px] leading-relaxed text-muted">
+            Plans, quotes, subscriptions, invoices and payments in one ledger, with leakage detection that catches what spreadsheets
+            miss.
           </p>
         </div>
-        <LedgerArt />
       </div>
-      <div className="flex items-center justify-center px-4 py-12">
+      <div className="flex items-center justify-center bg-surface px-4 py-12">
         <div className="w-full max-w-sm">
           <div className="mb-8 lg:hidden">
-            <div className="inline-flex rounded-lg bg-sidebar p-2">
-              <Logo />
-            </div>
+            <Logo />
           </div>
           {children}
         </div>
@@ -217,18 +225,18 @@ export function AuthLayout({ children }: { children: ReactNode }) {
 /** Decorative invoice ledger for the auth screen. */
 function LedgerArt() {
   const rows = [
-    ["INV-000412", "Acme Labs", "₹48,260.00", "Paid"],
-    ["INV-000413", "Northwind", "₹12,980.00", "Confirmed"],
-    ["INV-000414", "Globex", "₹6,490.00", "Overdue"],
+    ["INV-000412", "Acme Labs", "₹48,260.00", "Paid", "text-success bg-success-soft"],
+    ["INV-000413", "Northwind", "₹12,980.00", "Confirmed", "text-primary-ink bg-primary-soft"],
+    ["INV-000414", "Globex", "₹6,490.00", "Overdue", "text-danger bg-danger-soft"],
   ];
   return (
-    <div className="pointer-events-none absolute top-24 right-10 w-[400px] rotate-[-3deg] rounded-xl border border-white/10 bg-white/[0.03] p-4 font-mono text-[11px] text-zinc-400 shadow-2xl">
-      {rows.map(([n, c, a, s]) => (
-        <div key={n} className="flex items-center justify-between border-b border-white/5 py-2.5 last:border-0">
-          <span className="text-zinc-300">{n}</span>
-          <span>{c}</span>
-          <span className="text-zinc-200">{a}</span>
-          <span className={s === "Paid" ? "text-emerald-400" : s === "Overdue" ? "text-red-400" : "text-indigo-300"}>{s}</span>
+    <div className="pointer-events-none mt-16 w-full max-w-[440px] rotate-[-2deg] rounded-xl bg-surface p-2 text-[12px] shadow-pop">
+      {rows.map(([n, c, a, s, tone]) => (
+        <div key={n} className="flex items-center justify-between gap-3 border-b border-line px-3 py-3 last:border-0">
+          <span className="font-mono text-[11px] text-muted">{n}</span>
+          <span className="flex-1 text-ink">{c}</span>
+          <span className="tabular font-medium text-ink">{a}</span>
+          <span className={cn("rounded-full px-2 py-0.5 text-[11px] font-medium", tone)}>{s}</span>
         </div>
       ))}
     </div>

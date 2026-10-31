@@ -1,6 +1,6 @@
 # API and service contracts
 
-Base path: `/api/v1`. Status: **Implemented** endpoints exist on `main` and have tests; **Planned** endpoints are the agreed contract for module PRs.
+Base path: `/api/v1`. All endpoints below are implemented. Critical paths (auth, roles, billing idempotency, pricing, payments, discount release, lifecycle rules, portal isolation) have integration tests in `tests/integration/`.
 
 ## Conventions
 
@@ -24,24 +24,29 @@ Base path: `/api/v1`. Status: **Implemented** endpoints exist on `main` and have
 | | `POST /auth/reset-password` `{token,password}` → `{message}` | public, rate-limited | Implemented |
 | Staff (P1) | `GET /staff` · `POST /staff` · `PATCH /staff/:id` `{name?,isActive?,role?}` | `staff:manage` | Implemented |
 | System (P1) | `GET /health` · `GET /notifications` · `GET /outbox` | public · signed in · `customer:read` | Implemented |
-| Customers (P4, model P1) | `GET/POST /customers`, `GET/PATCH /customers/:id`, `GET /customers/:id/timeline`, `POST /customers/:id/notes`, `GET /customers/:id/health` | `customer:read` / `customer:write` | Planned |
-| Products (P2) | `GET/POST /products`, `GET/PATCH/DELETE /products/:id`, `POST /products/:id/variants`, `PATCH/DELETE /variants/:id` | `catalog:read` / `catalog:write` | Planned |
-| Plans (P2) | `GET/POST /plans`, `GET/PATCH /plans/:id`, `POST /plans/:id/close` | `catalog:read` / `catalog:write` | Planned |
-| Taxes (P2 API, P3 UI) | `GET/POST /taxes`, `PATCH/DELETE /taxes/:id` | `tax:read` / `tax:write` | Planned |
-| Discounts (P2) | `GET/POST /discounts`, `GET/PATCH/DELETE /discounts/:id` | `discount:read` / `discount:write` | Planned |
-| Templates (P2) | `GET/POST /quotation-templates`, `GET/PATCH/DELETE /quotation-templates/:id` | `template:read` / `template:write` | Planned |
-| Quotations (P2) | `POST /subscriptions/from-template/:templateId` `{customerId,startDate}` → `{data: Subscription}` (status `quotation`) | `subscription:write` | Planned |
-| Subscriptions (P1) | `GET /subscriptions?status&customerId&planId&from&to&q`, `POST /subscriptions`, `GET/PATCH /subscriptions/:id` (draft only), `POST /subscriptions/:id/transition` `{to,note?}`, `GET /subscriptions/:id/history` | `subscription:read` / `subscription:write` | Planned |
-| Billing (P1) | `POST /billing/run` → `BillingRunResult`, `GET /billing/runs` | `billing:run` | Planned |
-| Invoices (P1 service, P3 UI) | `GET /invoices?status&customerId&overdue&from&to`, `GET /invoices/:id`, `PATCH /invoices/:id` (draft only), `POST /invoices/:id/confirm`, `/cancel`, `/send`, `GET /invoices/:id/print` | `invoice:read` / `invoice:write` | Planned |
-| Payments (P3) | `POST /invoices/:id/payments` `PaymentInput`, `GET /payments?invoiceId&customerId&from&to&method`, `POST /payments` (unmatched receipt) | `payment:read` / `payment:write` | Planned |
-| Reports (P3) | `GET /reports/summary` → `DashboardSummary`, `/reports/revenue?from&to&groupBy`, `/reports/overdue`, `/reports/mrr`, `/reports/:name.csv` | `report:read` | Planned |
-| Findings (P3) | `GET /findings?kind&status&severity`, `PATCH /findings/:id` `{status,resolutionNote}`, `POST /findings/scan` | `finding:read` / `finding:write` | Planned |
-| Dunning (P4) | `GET/PUT /dunning/schedule`, `GET /dunning/reminders?invoiceId` | `invoice:read` / `settings:write` | Planned |
-| Renewals (P4) | `GET /renewals?window=7|30&status`, `POST /renewals/:id/quote` → renewal quotation, `PATCH /renewals/:id` `{status,note}` | `subscription:read` / `subscription:write` | Planned |
-| Simulator (P4) | `GET /simulator/baseline` (aggregates only; simulation runs in the browser with `shared/pricing.ts`) | `report:read` | Planned |
-| Portal (P4) | `GET /portal/summary`, `/portal/subscriptions`, `/portal/invoices`, `/portal/invoices/:id`, `/portal/payments`, `POST /portal/subscriptions/:id/pause` `/renew` `/close`, `POST /portal/subscriptions/:id/cancellation-request` | `portal:access` | Planned |
-| AI copilot (P1) | `POST /ai/ask` `{question}` → `{answer, figures, links}` | `ai:use`, throttled | Planned |
+| Customers (P4, model P1) | `GET/POST /customers`, `GET/PATCH /customers/:id`, `GET /customers/:id/timeline`, `POST /customers/:id/notes`, `GET /customers/:id/health` | `customer:read` / `customer:write` | Implemented |
+| Products (P2) | `GET/POST /products`, `GET/PATCH/DELETE /products/:id`, `POST /products/:id/variants`, `PATCH/DELETE /variants/:id` | `catalog:read` / `catalog:write` | Implemented |
+| Plans (P2) | `GET/POST /plans`, `GET/PATCH /plans/:id`, `POST /plans/:id/close` | `catalog:read` / `catalog:write` | Implemented |
+| Taxes (P2 API, P3 UI) | `GET/POST /taxes`, `PATCH/DELETE /taxes/:id` | `tax:read` / `tax:write` | Implemented |
+| Discounts (P2) | `GET/POST /discounts`, `GET/PATCH/DELETE /discounts/:id` | `discount:read` / `discount:write` | Implemented |
+| Templates (P2) | `GET/POST /quotation-templates`, `GET/PATCH/DELETE /quotation-templates/:id` | `template:read` / `template:write` | Implemented |
+| Quotations (P2) | `POST /subscriptions/from-template/:templateId` `{customerId,startDate}` → `{data: Subscription}` (status `quotation`) | `subscription:write` | Implemented |
+| Subscriptions (P1) | `GET /subscriptions?status&customerId&planId&from&to&q`, `POST /subscriptions`, `GET/PATCH /subscriptions/:id` (draft only), `POST /subscriptions/:id/transition` `{to,note?}`, `GET /subscriptions/:id/history` | `subscription:read` / `subscription:write` | Implemented |
+| Billing (P1) | `POST /billing/run` → `BillingRunResult`, `GET /billing/runs` | `billing:run` | Implemented |
+| Invoices (P1 service, P3 UI) | `GET /invoices?status&customerId&overdue&from&to`, `GET /invoices/:id`, `PATCH /invoices/:id` (draft only), `POST /invoices/:id/confirm`, `/cancel`, `/send`, `GET /invoices/:id/print` | `invoice:read` / `invoice:write` | Implemented |
+| Payments (P3) | `POST /invoices/:id/payments` `PaymentInput`, `GET /payments?invoiceId&customerId&from&to&method`, `POST /payments` (unmatched receipt) | `payment:read` / `payment:write` | Implemented |
+| Reports (P3) | `GET /reports/summary` → `DashboardSummary`, `/reports/revenue?from&to&groupBy`, `/reports/overdue`, `/reports/mrr`, `/reports/:name.csv` | `report:read` | Implemented |
+| Findings (P3) | `GET /findings?kind&status&severity`, `PATCH /findings/:id` `{status,resolutionNote}`, `POST /findings/scan` | `finding:read` / `finding:write` | Implemented |
+| Dunning (P4) | `GET/PUT /dunning/schedule`, `GET /dunning/reminders?invoiceId` | `invoice:read` / `settings:write` | Implemented |
+| Renewals (P4) | `GET /renewals?window=7|30&status`, `POST /renewals/:id/quote` → renewal quotation, `PATCH /renewals/:id` `{status,note}` | `subscription:read` / `subscription:write` | Implemented |
+| Simulator (P4) | `GET /simulator/baseline` (aggregates only; simulation runs in the browser with `shared/pricing.ts`) | `report:read` | Implemented |
+| Portal (P4) | `GET /portal/summary`, `/portal/subscriptions`, `/portal/invoices`, `/portal/invoices/:id`, `/portal/payments`, `POST /portal/subscriptions/:id/pause` `/renew` `/close`, `POST /portal/subscriptions/:id/cancellation-request` | `portal:access` | Implemented |
+| Billing extras (P1) | `GET /billing/config` → `{ demoMode }`; `POST /billing/run { asOf }` bills as of another date in demo mode | `billing:run` | Implemented |
+| Catalog extras (P2) | `GET /products/variants` (flat list with final prices), `POST /plans/:id/reopen` | `catalog:read` / `catalog:write` | Implemented |
+| Finance extras (P3) | `POST /invoices/confirm-drafts { ids }`, `POST /payments/:id/match { invoiceId }`, `GET /findings/summary?kind` | `invoice:write`, `payment:write`, `finding:read` | Implemented |
+| Customer extras (P4) | `GET /customers/health?category`, `GET /customers/:id/notes`, `GET /dunning/stats`, `POST /dunning/run`, `GET /renewals/summary`, `POST /renewals/scan`, `GET /retention/stats`, `POST /portal/subscriptions/:id/accept` `/resume`, `POST /portal/cancellation-requests/:id/resolve { decision }`, `GET/PATCH /portal/profile` | as module | Implemented |
+| Demo (P4) | `POST /demo/load` — six-month demo scenario through real services; empty database and `DEMO_MODE=true` only | admin | Implemented |
+| AI copilot (P1) | `GET /ai/status`, `POST /ai/ask` `{question}` → `{text, source, figures, rows}` | `ai:use`, throttled | Implemented |
 
 ## Cross-module service contracts (worker)
 

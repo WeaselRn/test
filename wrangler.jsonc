@@ -13,8 +13,7 @@
     {
       "binding": "DB",
       "database_name": "brightloop",
-      // Replace with the id printed by `npx wrangler d1 create brightloop` before deploying.
-      "database_id": "00000000-0000-0000-0000-000000000000",
+      "database_id": "7a4c55f6-e20b-45d6-a2cb-f398ef50e8c5",
       "migrations_dir": "migrations"
     }
   ],
@@ -24,6 +23,8 @@
   "vars": {
     "APP_URL": "http://localhost:5173",
     "CURRENCY": "INR",
-    "EMAIL_MODE": "outbox"
+    "EMAIL_MODE": "outbox",
+    // Enables "bill as of date" for demos. Set to "false" in production.
+    "DEMO_MODE": "true"
   }
 }

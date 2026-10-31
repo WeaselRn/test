@@ -7,6 +7,8 @@ export async function api(path: string, init: RequestInit & { cookie?: string } 
   const headers = new Headers(init.headers);
   if (init.body && !headers.has("content-type")) headers.set("content-type", "application/json");
   if (init.cookie) headers.set("cookie", init.cookie);
+  // Unique client IP per request so auth rate limits do not trip across tests.
+  headers.set("cf-connecting-ip", `10.0.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`);
   const res = await (exports as unknown as { default: Fetcher }).default.fetch(new Request(`${BASE}${path}`, { ...init, headers }));
   const text = await res.text();
   return { status: res.status, body: text ? JSON.parse(text) : null, cookie: sessionCookie(res) };

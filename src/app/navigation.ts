@@ -1,21 +1,24 @@
 /**
  * Sidebar navigation by role (PRD §7 "Menu by role"). The menu shows only what the
  * signed-in role may use; the server still checks every request.
- * Each item names its owner so placeholder pages point to the right teammate.
+ * Each item names its owner so reviewers know who to ask.
  */
 import {
   AlertOctagon,
   BarChart3,
+  BellRing,
   Boxes,
   CalendarClock,
   CreditCard,
+  FileClock,
   FileText,
   FlaskConical,
   Gauge,
   HeartPulse,
   LayoutTemplate,
   Layers,
-  Percent,
+  LifeBuoy,
+  PlayCircle,
   Receipt,
   Repeat,
   Settings,
@@ -24,6 +27,7 @@ import {
   Tag,
   User,
   Users,
+  Wallet,
   type LucideIcon,
 } from "lucide-react";
 import type { Permission, Role } from "@shared/permissions";
@@ -37,6 +41,8 @@ export interface NavItem {
   owner: Owner;
   permission?: Permission;
   roles?: readonly Role[];
+  /** Match the path exactly (for parents of other nav items). */
+  end?: boolean;
 }
 
 export interface NavGroup {
@@ -60,34 +66,55 @@ export const STAFF_NAV: NavGroup[] = [
   {
     label: "Sales",
     items: [
-      { label: "Subscriptions", to: "/subscriptions", icon: Repeat, owner: P1, permission: "subscription:read" },
+      { label: "Quotations", to: "/quotations", icon: FileClock, owner: P2, permission: "subscription:read" },
       { label: "Quotation templates", to: "/quotation-templates", icon: LayoutTemplate, owner: P2, permission: "template:read" },
-      { label: "Customers", to: "/customers", icon: Users, owner: P4, permission: "customer:read" },
+    ],
+  },
+  {
+    label: "Subscriptions",
+    items: [
+      { label: "All subscriptions", to: "/subscriptions", icon: Repeat, owner: P1, permission: "subscription:read" },
+      { label: "Plans", to: "/plans", icon: Layers, owner: P2, permission: "catalog:read" },
       { label: "Renewals", to: "/renewals", icon: CalendarClock, owner: P4, permission: "subscription:read" },
+      { label: "Retention", to: "/retention", icon: LifeBuoy, owner: P4, permission: "subscription:read" },
+    ],
+  },
+  {
+    label: "Products",
+    items: [
+      { label: "Products", to: "/products", icon: Boxes, owner: P2, permission: "catalog:read", end: true },
+      { label: "Variants", to: "/products/variants", icon: Tag, owner: P2, permission: "catalog:read" },
     ],
   },
   {
     label: "Billing",
     items: [
       { label: "Invoices", to: "/invoices", icon: FileText, owner: P3, permission: "invoice:read" },
-      { label: "Payments", to: "/payments", icon: CreditCard, owner: P3, permission: "payment:read" },
-      { label: "Revenue leakage", to: "/finance/leakage", icon: AlertOctagon, owner: P3, permission: "finding:read" },
-      { label: "Customer health", to: "/customers/health", icon: HeartPulse, owner: P4, permission: "customer:read" },
+      { label: "Billing runs", to: "/billing", icon: PlayCircle, owner: P1, permission: "billing:run" },
+      { label: "Taxes", to: "/taxes", icon: Receipt, owner: P2, permission: "tax:read" },
+      { label: "Discount rules", to: "/discounts", icon: Tag, owner: P2, permission: "discount:read" },
     ],
   },
   {
-    label: "Catalog",
+    label: "Payments",
     items: [
-      { label: "Products", to: "/products", icon: Boxes, owner: P2, permission: "catalog:read" },
-      { label: "Plans", to: "/plans", icon: Layers, owner: P2, permission: "catalog:read" },
-      { label: "Taxes", to: "/taxes", icon: Receipt, owner: P2, permission: "tax:read" },
-      { label: "Discounts", to: "/discounts", icon: Tag, owner: P2, permission: "discount:read" },
+      { label: "Payments", to: "/payments", icon: CreditCard, owner: P3, permission: "payment:read", end: true },
+      { label: "Outstanding invoices", to: "/payments/outstanding", icon: Wallet, owner: P3, permission: "payment:read" },
+      { label: "Dunning", to: "/dunning", icon: BellRing, owner: P4, permission: "invoice:read" },
+    ],
+  },
+  {
+    label: "Customers",
+    items: [
+      { label: "Customer directory", to: "/customers", icon: Users, owner: P4, permission: "customer:read", end: true },
+      { label: "Customer health", to: "/customers/health", icon: HeartPulse, owner: P4, permission: "customer:read" },
     ],
   },
   {
     label: "Reports",
     items: [
       { label: "Reports", to: "/reports", icon: BarChart3, owner: P3, permission: "report:read" },
+      { label: "Revenue leakage", to: "/finance/leakage", icon: AlertOctagon, owner: P3, permission: "finding:read" },
       { label: "What-if simulator", to: "/simulator", icon: FlaskConical, owner: P4, permission: "report:read" },
     ],
   },
@@ -95,7 +122,7 @@ export const STAFF_NAV: NavGroup[] = [
     label: "Settings",
     items: [
       { label: "Staff", to: "/settings/staff", icon: ShieldCheck, owner: P1, permission: "staff:manage" },
-      { label: "Profile", to: "/settings/profile", icon: Settings, owner: P1 },
+      { label: "Roles & profile", to: "/settings/profile", icon: Settings, owner: P1 },
     ],
   },
 ];
@@ -104,10 +131,10 @@ export const PORTAL_NAV: NavGroup[] = [
   {
     label: "Account",
     items: [
-      { label: "Overview", to: "/portal", icon: Gauge, owner: P4 },
+      { label: "Overview", to: "/portal", icon: Gauge, owner: P4, end: true },
       { label: "My subscriptions", to: "/portal/subscriptions", icon: Repeat, owner: P4 },
       { label: "My invoices", to: "/portal/invoices", icon: FileText, owner: P4 },
-      { label: "My payments", to: "/portal/payments", icon: Percent, owner: P4 },
+      { label: "My payments", to: "/portal/payments", icon: CreditCard, owner: P4 },
       { label: "Profile", to: "/portal/profile", icon: User, owner: P4 },
     ],
   },

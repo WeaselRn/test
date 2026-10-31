@@ -104,6 +104,7 @@ export const customers = sqliteTable(
     uniqueIndex("customers_user_uq").on(t.userId),
     uniqueIndex("customers_email_uq").on(t.email),
     index("customers_contact_idx").on(t.contactName),
+    index("customers_created_idx").on(t.createdAt),
   ],
 );
 
@@ -355,6 +356,8 @@ export const subscriptions = sqliteTable(
     index("subscriptions_renewed_from_idx").on(t.renewedFromId),
     index("subscriptions_next_invoice_idx").on(t.status, t.nextInvoiceDate),
     index("subscriptions_expiry_idx").on(t.expiryDate),
+    index("subscriptions_created_idx").on(t.createdAt),
+    index("subscriptions_start_idx").on(t.startDate),
   ],
 );
 
@@ -502,6 +505,7 @@ export const payments = sqliteTable(
     index("payments_customer_idx").on(t.customerId),
     index("payments_paid_on_idx").on(t.paidOn),
     index("payments_recorded_by_idx").on(t.recordedBy),
+    index("payments_created_idx").on(t.createdAt),
   ],
 );
 
